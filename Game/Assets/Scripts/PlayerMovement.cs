@@ -35,12 +35,15 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Editor ground layer")][SerializeField] private LayerMask ground;
     private int groundLayer; // log base 2 of ground (^) actually used
     private Rigidbody2D rigidBody;
+    private WaterLevel waterLevel;
+
 
     [SerializeField] private Transform camera;
     void Start()
     {
         groundLayer = (int)Mathf.Log(ground, 2);
         rigidBody = GetComponent<Rigidbody2D>();
+        waterLevel = GetComponent<WaterLevel>();
         //runSpeed = baseRunSpeed;
     }
 
@@ -97,18 +100,6 @@ public class PlayerMovement : MonoBehaviour
             wallJumpSideDistNow = wallJumpDistSide * sidePower;
         if (wallJumpSideDistNow < 0)
             wallJumpSideDistNow = wallJumpDistSide * sidePower * -1;
-        /*if (wallJumpSideDistNow > 0) //Decreases momentum from wall rebound to 0 over time
-            wallJumpSideDistNow -= 0.10f; //TODO probably should make this decrease nonlinear
-        if (wallJumpSideDistNow < 0)
-            wallJumpSideDistNow += 0.10f;*/
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)//simple respawn system TODO:move to it's own script
-    {
-        if (collision.tag.Equals("Respawn"))
-        {
-            transform.position = new Vector2(0, 0);
-        }
     }
 
     IEnumerator Dash()//sets gravity to 0, turns on dash trail, adds horizontal velocity in the same way as wall jump

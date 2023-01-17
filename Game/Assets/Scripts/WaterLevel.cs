@@ -7,11 +7,14 @@ public class WaterLevel : MonoBehaviour
 {
     public float waterAmount = 100;
     public float dryingRate = 1;
+    public float iFrameTime = 3f;
     [SerializeField] Slider healthBarSlider;
     [SerializeField] Image indicatorUi;
     [SerializeField] List<Sprite> dropletSprites;
+    [SerializeField] ParticleSystem splashParticles;
     private float maxWaterAmount;
     private bool isInLake = false;
+    private bool isInvincible = false; //I-frames
 
     private void Start()
     {
@@ -30,7 +33,7 @@ public class WaterLevel : MonoBehaviour
         catch { }
         if (isInLake)
         {
-            waterAmount += 0.5f;
+            waterAmount += Time.deltaTime * 30f;
             if (waterAmount > 100) //can't add more than 100% water level
                 waterAmount = 100;
         }
@@ -59,5 +62,34 @@ public class WaterLevel : MonoBehaviour
         {
             isInLake = false;
         }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag.Equals("Enemy"))
+        {
+            DecreaseWaterLevel(10);
+        }
+        if (collision.tag.Equals("Respawn"))
+        {
+            waterAmount = 0;
+        }
+    }
+
+    public void DecreaseWaterLevel(float damage)
+    {
+        if (isInvincible == false)
+        {
+            StartCoroutine(iFrameDelay());
+            waterAmount -= damage;
+            splashParticles.Emit(5);
+        }
+    }
+
+    IEnumerator iFrameDelay()
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(iFrameTime);
+        isInvincible = false;
     }
 }
