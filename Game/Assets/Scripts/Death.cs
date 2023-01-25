@@ -20,6 +20,7 @@ public class Death : MonoBehaviour
     {
        if (waterLevel.waterAmount <= 0)
         {
+            GameObject.Find("Player").GetComponent<PlayerMovement>().isdead = true;
             DeathScreen.SetActive(true);
             Time.timeScale = 0;
         }
@@ -30,6 +31,7 @@ public class Death : MonoBehaviour
             DeathTextUI.text = DeathTextList[ Random.Range(0, DeathTextList.Length)];
             Time.timeScale = 1;
             waterLevel.waterAmount = 100;
+            GameObject.Find("Player").GetComponent<PlayerMovement>().isdead = false;
         }
     }
 }

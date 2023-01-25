@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     private int groundLayer; // log base 2 of ground (^) actually used
     private Rigidbody2D rigidBody;
     private WaterLevel waterLevel;
+    public bool isdead = false;
 
 
     [SerializeField] private Transform camera;
@@ -104,7 +105,9 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator Dash()//sets gravity to 0, turns on dash trail, adds horizontal velocity in the same way as wall jump
     {
-        canDash = false;
+        if (!isdead)
+        {
+canDash = false;
         isDashing = true;
         float originalGravity = rigidBody.gravityScale;
         rigidBody.gravityScale = 0f;
@@ -118,6 +121,8 @@ public class PlayerMovement : MonoBehaviour
         isDashing = false;
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
+        }
+        
     }
 
     IEnumerator JumpDelay()//small cooldown for jump
